@@ -26,13 +26,17 @@ func ParseIdFromRequest(r *http.Request) int64 {
 	return id
 }
 
+func SetResponse(w http.ResponseWriter, res []byte) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
+}
+
 func GetGameById(w http.ResponseWriter, r *http.Request) {
 	id := ParseIdFromRequest(r)
 	game, _ := models.GetGameById(id)
 	res, _ := json.Marshal(game)
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	SetResponse(w, res)
 }
 
 func CreateGame(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +45,7 @@ func CreateGame(w http.ResponseWriter, r *http.Request) {
 	game := gameModel.CreateGame()
 	res, _ := json.Marshal(game)
 	w.WriteHeader(http.StatusOK)
-	//w.Header().Set("Content-Type", "application/json") ???
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(res)
 }
 
@@ -49,7 +53,21 @@ func DeleteGame(w http.ResponseWriter, r *http.Request) {
 	id := ParseIdFromRequest(r)
 	game := models.DeleteGame(id)
 	res, _ := json.Marshal(game)
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	SetResponse(w, res)
+}
+
+func UpdateGame(w http.ResponseWriter, r *http.Request) {
+	updateGame := &models.Game{}
+	utils.ParseBody(r, updateGame)
+	id := ParseIdFromRequest(r)
+	curGame, db := models.GetGameById(id)
+	if updateGame.Title != "" {
+		curGame.Title = updateGame.Title
+	}
+	if updateGame.Author != "" {
+		curGame.Author = updateGame.Author
+	}
+	db.Save(&curGame)
+	res, _ := json.Marshal(curGame)
+	SetResponse(w, res)
 }
