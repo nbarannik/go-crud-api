@@ -9,14 +9,16 @@ import (
 	"strconv"
 )
 
-var NewGame models.Game //Todo: delete
+func SetResponse(w http.ResponseWriter, res []byte) {
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(res)
+}
 
 func GetGame(w http.ResponseWriter, r *http.Request) {
 	games := models.GetGames()
 	res, _ := json.Marshal(games)
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	SetResponse(w, res)
 }
 
 func ParseIdFromRequest(r *http.Request) int64 {
@@ -24,12 +26,6 @@ func ParseIdFromRequest(r *http.Request) int64 {
 	gameId := vars["gameId"]
 	id, _ := strconv.ParseInt(gameId, 0, 0)
 	return id
-}
-
-func SetResponse(w http.ResponseWriter, res []byte) {
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
 }
 
 func GetGameById(w http.ResponseWriter, r *http.Request) {
@@ -44,9 +40,7 @@ func CreateGame(w http.ResponseWriter, r *http.Request) {
 	utils.ParseBody(r, gameModel)
 	game := gameModel.CreateGame()
 	res, _ := json.Marshal(game)
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	SetResponse(w, res)
 }
 
 func DeleteGame(w http.ResponseWriter, r *http.Request) {

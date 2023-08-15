@@ -42,6 +42,6 @@ func GetGameById(Id int64) (*Game, *gorm.DB) {
 
 func DeleteGame(Id int64) Game {
 	var game Game
-	db.Where("ID=?", Id).Delete(game)
+	db.Where("ID=?", Id).Delete(&game)
 	return game
 }
