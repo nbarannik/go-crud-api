@@ -3,13 +3,14 @@ package models
 import (
 	"github.com/nbarannik/gameshop-go-crud-api/pkg/config"
 	"gorm.io/gorm"
+	"log"
 )
 
 var db *gorm.DB
 
 type Game struct {
 	gorm.Model
-	Title  string `gorm:""json:"title"`
+	Title  string `gorm:"" json:"title"`
 	Author string `json:"author"`
 }
 
@@ -18,12 +19,11 @@ func init() {
 	db = config.GetDB()
 	err := db.AutoMigrate(&Game{})
 	if err != nil {
-		panic(err)
+		log.Fatal("Failed to connect to db: %w", err)
 	}
 }
 
 func (g *Game) CreateGame() *Game {
-	//TODO: Add check if the same value is already in the table
 	db.Create(&g)
 	return g
 }

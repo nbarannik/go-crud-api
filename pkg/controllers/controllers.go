@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/nbarannik/gameshop-go-crud-api/pkg/models"
 	"github.com/nbarannik/gameshop-go-crud-api/pkg/utils"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -12,10 +13,13 @@ import (
 func SetResponse(w http.ResponseWriter, res []byte) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(res)
+	_, err := w.Write(res)
+	if err != nil {
+		log.Printf("Failed to set response: %s", err)
+	}
 }
 
-func GetGame(w http.ResponseWriter, r *http.Request) {
+func GetGame(w http.ResponseWriter, _ *http.Request) {
 	games := models.GetGames()
 	res, _ := json.Marshal(games)
 	SetResponse(w, res)
@@ -37,7 +41,10 @@ func GetGameById(w http.ResponseWriter, r *http.Request) {
 
 func CreateGame(w http.ResponseWriter, r *http.Request) {
 	gameModel := &models.Game{}
-	utils.ParseBody(r, gameModel)
+	err := utils.ParseBody(r, gameModel)
+	if err != nil {
+
+	}
 	game := gameModel.CreateGame()
 	res, _ := json.Marshal(game)
 	SetResponse(w, res)
@@ -52,7 +59,11 @@ func DeleteGame(w http.ResponseWriter, r *http.Request) {
 
 func UpdateGame(w http.ResponseWriter, r *http.Request) {
 	updateGame := &models.Game{}
-	utils.ParseBody(r, updateGame)
+	err := utils.ParseBody(r, updateGame)
+	if err != nil {
+		http.Error(w, "Failed to update game", http.StatusInternalServerError)
+		return
+	}
 	id := ParseIdFromRequest(r)
 	curGame, db := models.GetGameById(id)
 	if updateGame.Title != "" {

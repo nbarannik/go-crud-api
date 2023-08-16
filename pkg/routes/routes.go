@@ -5,7 +5,7 @@ import (
 	"github.com/nbarannik/gameshop-go-crud-api/pkg/controllers"
 )
 
-func RegisterGameStoreRoutes(router *mux.Router) {
+func RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/game/", controllers.GetGame).Methods("GET")
 	router.HandleFunc("/game/", controllers.CreateGame).Methods("POST")
 	router.HandleFunc("/game/{gameId}", controllers.GetGameById).Methods("GET")
