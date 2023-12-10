@@ -1,6 +1,6 @@
 # Golang, MySQL CRUD API
 
-Example of simple CRUD API for games shop application using Golang, MySQL, [go-gorm/gorm](https://github.com/go-gorm/gorm) and [gorilla/mux](https://github.com/gorilla/mux). 
+Example of simple CRUD API using Golang, MySQL, [go-gorm/gorm](https://github.com/go-gorm/gorm) and [gorilla/mux](https://github.com/gorilla/mux). 
 
 ## Set up:
 
